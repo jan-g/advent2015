@@ -225,3 +225,11 @@ main =
     describe "day 16" $ do
       it "Should match the sought item" $ do
         Day16.matches Day16.seeking Day16.seeking `shouldBe` True
+    
+    describe "Day 17" $ do
+      let example = [20, 15, 10, 5, 5]
+      it "makes the example target of 25" $ do
+        Day17.makes 25 example `shouldBe` 4
+
+      it "lists ways to make the target" $ do
+        Day17.makes' [] 25 example `shouldBe` [[5,20], [5,20], [10,15], [5,5,15]]

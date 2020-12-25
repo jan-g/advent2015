@@ -22,6 +22,18 @@ import qualified Day10
 import qualified Day11
 import qualified Day12
 import qualified Day13
+import qualified Day14
+import qualified Day15
+import qualified Day16
+import qualified Day17
+import qualified Day18
+import qualified Day19
+import qualified Day20
+import qualified Day21
+import qualified Day22
+import qualified Day23
+import qualified Day24
+import qualified Day25
 
 
 main :: IO ()
@@ -209,3 +221,7 @@ main =
     describe "Day24" $ do it "works" $ do Day6.day6 [] `shouldBe` "hello world"
     describe "Day24b" $ do it "works" $ do Day6.day6b [] `shouldBe` "hello world"
 -}
+
+    describe "day 16" $ do
+      it "Should match the sought item" $ do
+        Day16.matches Day16.seeking Day16.seeking `shouldBe` True

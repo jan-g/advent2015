@@ -111,4 +111,14 @@ The Elves decide they don't want to visit an infinite number of houses. Instead,
 With these changes, what is the new lowest house number of the house to get at least as many presents as the number in your puzzle input?
 -}
 
-day20b ls = "hello world"
+
+limitedFactors :: Integer -> [Integer]
+limitedFactors n = factors n & filter (\i -> n `div` i <= 50)
+
+day20b ls =
+  let lim = parse ls
+  in  [1..]
+    & map (\i -> (i, limitedFactors i & sum & (* 11)))
+    & dropWhile ((< lim) . snd)
+    & head
+    & fst

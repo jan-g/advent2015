@@ -233,3 +233,69 @@ main =
 
       it "lists ways to make the target" $ do
         Day17.makes' [] 25 example `shouldBe` [[5,20], [5,20], [10,15], [5,5,15]]
+
+    describe "Day 18" $ do
+      let example = ".#.#.#\n\
+                    \...##.\n\
+                    \#....#\n\
+                    \..#...\n\
+                    \#.#..#\n\
+                    \####.." & lines
+      it "iterates the example" $ do
+        let g0 = Day18.parse example
+        (iterate (Day18.next (6,6)) g0 & drop 4 & head & Set.size) `shouldBe` 4
+      
+      it "iterates the second example" $ do
+        let g0 = Day18.parse example & Day18.forceOn (6,6)
+        (iterate (Day18.next' (6,6)) g0 & drop 5 & head & Set.size) `shouldBe` 17
+
+    describe "day 19" $ do
+      let rules = "H => HO\n\
+                  \H => OH\n\
+                  \O => HH" & lines
+          rs = Day19.parseRules rules
+          mol = Day19.parseMolecule "HOH"
+      it "works out alternatives" $ do
+        Day19.alts rs mol `shouldBe` Set.fromList [["H", "O", "O", "H"],
+                                                           ["H", "O", "H", "O"],
+                                                           ["O", "H", "O", "H"],
+                                                           ["H", "H", "H", "H"]]
+      it "works out the alternatives to Santa's favourite molecule" $ do
+        (Day19.alts rs (Day19.parseMolecule "HOHOHO") & Set.size) `shouldBe` 7
+      
+      let example = "e => H\n\
+                    \e => O\n\
+                    \H => HO\n\
+                    \H => OH\n\
+                    \O => HH" & lines
+          rs = Day19.parseRules example
+      it "parses the es correctly" $ do
+        Map.size rs `shouldBe` 3
+      
+      it "searches correctly" $ do
+        let (_, a1) = Day19.iterations rs (Day19.parseMolecule "HOH")
+        a1 `shouldBe` 3
+        let (_, a2) = Day19.iterations rs (Day19.parseMolecule "HOHOHO")
+        a2 `shouldBe` 6
+      
+      let rs' = Day19.expandRules rs
+      it "reverses rules" $ do
+        rs' `shouldBe` [("H", ["H", "O"]),
+                        ("H", ["O", "H"]),
+                        ("O", ["H", "H"]),
+                        ("e", ["H"]),
+                        ("e", ["O"])]
+      it "computes a precursor" $ do
+        Day19.precursors (take 3 rs') ["H", "O", "H"]
+           `shouldBe` Set.fromList (map Day19.parseMolecule ["HOH", "HH"])
+        Day19.precs rs' ["H", "O", "H"]
+           `shouldBe` Set.fromList [["H", "H"], ["e", "O", "H"], ["H", "e", "H"], ["H", "O", "e"]]
+
+      it "doesn't reduce an irreducible" $ do
+        Day19.precs (take 3 rs') (Day19.parseMolecule "OO") `shouldBe` Set.empty
+
+      it "works out the iterations required" $ do
+        Day19.iterations' rs (Day19.parseMolecule "HOH") `shouldBe` 3
+        Day19.iterations' rs (Day19.parseMolecule "HOHOHO") `shouldBe` 6
+        
+        

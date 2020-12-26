@@ -2,22 +2,113 @@ module Day20 where
 
 import Data.Function ((&))
 import Data.List.Split
-import Data.Array
+import Data.List as L
+import Data.Array as A
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 import Data.Char
+import Data.Maybe (catMaybes, isJust, fromJust)
+import Text.ParserCombinators.ReadP as P
+import Numeric (readInt)
+import Data.Bits ((.&.), (.|.))
+
+import Lib
 
 {-
+--- Day 20: Infinite Elves and Infinite Houses ---
+
+To keep the Elves busy, Santa has them deliver some presents by hand, door-to-door. He sends them down a street with infinite houses numbered sequentially: 1, 2, 3, 4, 5, and so on.
+
+Each Elf is assigned a number, too, and delivers presents to houses based on that number:
+
+    The first Elf (number 1) delivers presents to every house: 1, 2, 3, 4, 5, ....
+    The second Elf (number 2) delivers presents to every second house: 2, 4, 6, 8, 10, ....
+    Elf number 3 delivers presents to every third house: 3, 6, 9, 12, 15, ....
+
+There are infinitely many Elves, numbered starting with 1. Each Elf delivers presents equal to ten times his or her number at each house.
+
+So, the first nine houses on the street end up like this:
+
+House 1 got 10 presents.
+House 2 got 30 presents.
+House 3 got 40 presents.
+House 4 got 70 presents.
+House 5 got 60 presents.
+House 6 got 120 presents.
+House 7 got 80 presents.
+House 8 got 150 presents.
+House 9 got 130 presents.
+
+The first house gets 10 presents: it is visited only by Elf 1, which delivers 1 * 10 = 10 presents. The fourth house gets 70 presents, because it is visited by Elves 1, 2, and 4, for a total of 10 + 20 + 40 = 70 presents.
+
+What is the lowest house number of the house to get at least as many presents as the number in your puzzle input?
+
+Your puzzle input is 29000000.
 -}
 
-parse ls = ls
-         & head
-         & splitOn "-"
-         & map read
 
-day20 ls = "hello world"
+isPrime :: Integer -> Bool
+primes :: [Integer]
+
+isPrime n 
+  | n < 2     = False
+  | otherwise = all (\p -> n `mod` p /= 0) . takeWhile ((<= n) . (^ 2)) $ primes
+
+primes = 2 : filter isPrime [3..]
+
+primeFactors :: Integer -> [Integer]
+primeFactors n = iter n primes where
+    iter n (p:_) | n < p^2 = [n | n > 1]
+    iter n ps@(p:ps') =
+        let (d, r) = n `divMod` p
+        in if r == 0 then p : iter d ps else iter n ps'
+
+
+parse :: [String] -> Integer      
+parse ls = ls & head & read
+
+dedup [] = []
+dedup (x:xs) = x : dropRest xs
+  where dropRest [] = []
+        dropRest (y:ys) | y == x = dropRest ys
+                        | otherwise = dedup (y:ys)
+
+
+squareRoot :: Integer -> Integer
+squareRoot 0 = 0
+squareRoot 1 = 1
+squareRoot n =
+   let twopows = iterate (^2) 2
+       (lowerRoot, lowerN) =
+          last $ takeWhile ((n>=) . snd) $ zip (1:twopows) twopows
+       newtonStep x = div (x + div n x) 2
+       iters = iterate newtonStep (squareRoot (div n lowerN) * lowerRoot)
+       isRoot r  =  r^2 <= n && n < (r+1)^2
+  in  head $ dropWhile (not . isRoot) iters
+  
+
+factors :: Integer -> [Integer]
+factors n =
+  let s = squareRoot n
+      smallFactors = [i | i <- [1..s], n `mod` i == 0]
+      largeFactors = reverse smallFactors & map (n `div`)
+  in dedup $ smallFactors ++ largeFactors
+
+
+day20 ls =
+  let lim = parse ls
+  in  [1..]
+    & map (\i -> (i, factors i & sum & (* 10)))
+    & dropWhile ((< lim) . snd)
+    & head
+    & fst
 
 {-
+--- Part Two ---
+
+The Elves decide they don't want to visit an infinite number of houses. Instead, each Elf will stop after delivering presents to 50 houses. To make up for it, they decide to deliver presents equal to eleven times their number at each house.
+
+With these changes, what is the new lowest house number of the house to get at least as many presents as the number in your puzzle input?
 -}
 
 day20b ls = "hello world"

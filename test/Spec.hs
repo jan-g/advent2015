@@ -318,3 +318,27 @@ main =
                                                     ]
       it "runs the example" $ do
         Day23.run prog (Day23.startState) `shouldBe` Day23.State { Day23.a=2, Day23.b=0, Day23.pc=4 }
+
+    describe "day 24" $ do
+      it "works out two-way partitions" $ do
+        Day24.sumTo 15 [1..10] `shouldBe` Set.fromList [Set.fromList [1,2,3,4,5]
+                                                       ,Set.fromList [1,2,3,9]
+                                                       ,Set.fromList [1,2,4,8]
+                                                       ,Set.fromList [1,2,5,7]
+                                                       ,Set.fromList [1,3,4,7]
+                                                       ,Set.fromList [1,3,5,6]
+                                                       ,Set.fromList [2,3,4,6]
+                                                       ,Set.fromList [1,4,10]
+                                                       ,Set.fromList [1,5,9]
+                                                       ,Set.fromList [1,6,8]
+                                                       ,Set.fromList [2,3,10]
+                                                       ,Set.fromList [2,4,9]
+                                                       ,Set.fromList [2,5,8]
+                                                       ,Set.fromList [2,6,7]
+                                                       ,Set.fromList [3,4,8]
+                                                       ,Set.fromList [3,5,7]
+                                                       ,Set.fromList [4,5,6]
+                                                       ,Set.fromList [5,10]
+                                                       ,Set.fromList [6,9]
+                                                       ,Set.fromList [7,8]
+                                                       ]

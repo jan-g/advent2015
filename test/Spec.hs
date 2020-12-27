@@ -298,4 +298,8 @@ main =
         Day19.iterations' rs (Day19.parseMolecule "HOH") `shouldBe` 3
         Day19.iterations' rs (Day19.parseMolecule "HOHOHO") `shouldBe` 6
         
-        
+    describe "day 21" $ do
+      it "resolves basic combat" $ do
+        let p = Day21.C { Day21.hp=8, Day21.damage=5, Day21.armour=5 }
+            e = Day21.C { Day21.hp=12, Day21.damage=7, Day21.armour=2 }
+        Day21.fight p e `shouldBe` Left (p {Day21.hp=2})

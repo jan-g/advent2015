@@ -342,3 +342,18 @@ main =
                                                        ,Set.fromList [6,9]
                                                        ,Set.fromList [7,8]
                                                        ]
+
+    describe "day 25" $ do
+      it "works out the basic grid" $ do
+        Day25.grid (1,1) `shouldBe` 1
+        Day25.grid (2,1) `shouldBe` 2
+        Day25.grid (1,2) `shouldBe` 3
+        Day25.grid (4,2) `shouldBe` 12
+      
+      it "works out the large numbers" $ do
+        Day25.valueAt (1,1) `shouldBe` 20151125
+        Day25.valueAt (1,3) `shouldBe` 17289845
+        Day25.valueAt (4,2) `shouldBe` 32451966
+        Day25.valueAt (5,1) `shouldBe` 77061
+        Day25.valueAt (6,6) `shouldBe` 27995004
+        

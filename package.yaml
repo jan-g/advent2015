@@ -30,6 +30,8 @@ dependencies:
 - utf8-string
 - base16-bytestring
 - strings >= 1.1
+- heap >= 1.0.4
+
 
 library:
   source-dirs: src

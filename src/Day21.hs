@@ -12,6 +12,7 @@ import Text.ParserCombinators.ReadP as P
 import Numeric (readInt)
 import Data.Bits ((.&.), (.|.))
 import Control.Monad
+import Data.Either
 
 import Lib
 
@@ -131,15 +132,17 @@ equipPlayer enemy = do
   let player = C { hp=100, damage=wd + r1d + r2d, armour=aa + r1a + r2a }
       cost = wc + ac + r1c + r2c
   case fight player enemy of
-    Left _ -> return (cost, wn, an, r1n, r2n)
-    Right _ -> mzero
+    Left _ -> return $ Left (cost, wn, an, r1n, r2n)
+    Right _ -> return $ Right (cost, wn, an, r1n, r2n)
 
     
 day21 ls =
   let enemy = parse ls
-  in minimum (equipPlayer enemy)
+  in equipPlayer enemy & lefts & minimum
 
 {-
 -}
 
-day21b ls = "hello world"
+day21b ls =
+  let enemy = parse ls
+  in equipPlayer enemy & rights & maximum

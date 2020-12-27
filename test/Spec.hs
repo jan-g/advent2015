@@ -303,3 +303,18 @@ main =
         let p = Day21.C { Day21.hp=8, Day21.damage=5, Day21.armour=5 }
             e = Day21.C { Day21.hp=12, Day21.damage=7, Day21.armour=2 }
         Day21.fight p e `shouldBe` Left (p {Day21.hp=2})
+
+    describe "day 23" $ do
+      let example = "inc a\n\
+                    \jio a, +2\n\
+                    \tpl a\n\
+                    \inc a" & lines
+          prog = Day23.parse example
+      it "Parses" $ do
+        prog `shouldBe` Map.fromList [ (0, Day23.Inc Day23.A)
+                                                    , (1, Day23.Jio Day23.A 2)
+                                                    , (2, Day23.Tpl Day23.A)
+                                                    , (3, Day23.Inc Day23.A)
+                                                    ]
+      it "runs the example" $ do
+        Day23.run prog (Day23.startState) `shouldBe` Day23.State { Day23.a=2, Day23.b=0, Day23.pc=4 }

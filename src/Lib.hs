@@ -3,6 +3,7 @@ module Lib
     , makeArray
     , natParser
     , intParser
+    , plusOrMinusParser
     , quickParse
     , drawMapWith
     , mapReverse
@@ -48,6 +49,9 @@ intParser = do
     char '-'
     i <- natParser
     return $ -i) <++ natParser
+
+plusOrMinusParser :: ReadP Integer
+plusOrMinusParser = (char '+' *> natParser) <++ (char '-' *> natParser <<!! (\x -> -x))
 
 quickParse :: ReadP t -> String -> Maybe t
 quickParse parser s =
